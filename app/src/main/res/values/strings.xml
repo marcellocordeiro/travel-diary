@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Travel Diary</string>
 
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Diaries overview</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -113,4 +113,6 @@
     <string name="title_activity_event_modification">EventModificationActivity</string>
     <string name="title_activity_diary_creation">DiaryCreationActivity</string>
     <string name="title_activity_diary_modification">DiaryModificationActivity</string>
+
+    <string name="diary_name_header">Diary name:</string>
 </resources>
