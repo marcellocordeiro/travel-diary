@@ -9,9 +9,14 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
+import com.myapp.traveldiary.adapters.ListDiariesAdapter
 import com.myapp.traveldiary.dal.DiaryDB
 import com.myapp.traveldiary.dal.dao.Diary
+import com.myapp.traveldiary.tasks.GetDiariesListTask
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 
@@ -20,6 +25,9 @@ import org.jetbrains.anko.doAsync
 
 class MainActivity : AppCompatActivity() {
     private var diaryDB: DiaryDB? = null
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var viewAdapter: ListDiariesAdapter
+    private lateinit var viewManager: RecyclerView.LayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +35,18 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         diaryDB = DiaryDB.getDatabase(this)
+
+        viewManager = LinearLayoutManager(this)
+        viewAdapter = ListDiariesAdapter(emptyList(), this)
+
+        recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
+            layoutManager = viewManager
+            adapter = viewAdapter
+        }
+        recyclerView.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
+
+
+        GetDiariesListTask(viewAdapter, diaryDB!!).execute()
 
         start_create_diary.setOnClickListener { view ->
             createPopUpWindow(view)
@@ -57,6 +77,8 @@ class MainActivity : AppCompatActivity() {
                 val diary = Diary(name = diaryName)
 
                 diaryDB!!.diaryDao().insert(diary)
+
+                GetDiariesListTask(viewAdapter, diaryDB!!).execute()
             }
 
             popupWindow.dismiss()
