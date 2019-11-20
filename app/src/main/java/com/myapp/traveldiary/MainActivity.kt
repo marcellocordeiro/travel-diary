@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,42 +18,51 @@ import com.google.android.material.textfield.TextInputEditText
 import com.myapp.traveldiary.adapters.ListDiariesAdapter
 import com.myapp.traveldiary.dal.DiaryDB
 import com.myapp.traveldiary.dal.dao.Diary
-import com.myapp.traveldiary.tasks.GetDiariesListTask
+import com.myapp.traveldiary.dal.dao.DiaryViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
-
 
 // Diary overview
 
 class MainActivity : AppCompatActivity() {
     private var diaryDB: DiaryDB? = null
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: ListDiariesAdapter
-    private lateinit var viewManager: RecyclerView.LayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        diaryDB = DiaryDB.getInstance(this)
+        recyclerView = findViewById(R.id.recycler_view)
 
-        viewManager = LinearLayoutManager(this)
-        viewAdapter = ListDiariesAdapter(emptyList(), this)
-
-        recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
-            layoutManager = viewManager
-            adapter = viewAdapter
-        }
-        recyclerView.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
-
-
-        GetDiariesListTask(viewAdapter, diaryDB!!).execute()
+        showDiaryList()
 
         start_create_diary.setOnClickListener { view ->
             createPopUpWindow(view)
 
         }
+    }
+
+    fun showDiaryList() {
+        diaryDB = DiaryDB.getInstance(this)
+
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = ListDiariesAdapter()
+            //setHasFixedSize(true)
+
+            addItemDecoration(
+                DividerItemDecoration(
+                    context,
+                    (layoutManager as LinearLayoutManager).orientation
+                )
+            )
+        }
+
+        val model = ViewModelProviders.of(this).get(DiaryViewModel::class.java)
+        model.diaryList.observe(
+            this,
+            Observer { (recyclerView.adapter as ListDiariesAdapter).submitList(it) })
     }
 
     private fun createPopUpWindow(view: View) {
@@ -77,8 +88,6 @@ class MainActivity : AppCompatActivity() {
                 val diary = Diary(name = diaryName)
 
                 diaryDB!!.diaryDao().insert(diary)
-
-                GetDiariesListTask(viewAdapter, diaryDB!!).execute()
             }
 
             popupWindow.dismiss()

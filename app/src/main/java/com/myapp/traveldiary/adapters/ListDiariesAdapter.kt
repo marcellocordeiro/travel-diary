@@ -3,38 +3,48 @@ package com.myapp.traveldiary.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.myapp.traveldiary.MainActivity
 import com.myapp.traveldiary.R
 import com.myapp.traveldiary.dal.dao.Diary
 import kotlinx.android.synthetic.main.diaries_list.view.*
 
-class ListDiariesAdapter (private var diaries: List<Diary>, private val application: MainActivity):
-    RecyclerView.Adapter<ListDiariesAdapter.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val episodeView =
-            LayoutInflater
-                .from(application.applicationContext)
-                .inflate(R.layout.diaries_list, parent, false)
+class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder>(DIFF_CALLBACK) {
 
-        return ViewHolder(episodeView)
+    class DiaryViewHolder (view : View) : RecyclerView.ViewHolder(view) {
+        val name = view.diary_name
+
+        fun bindTo(item : Diary) {
+            name.apply {
+                text = item.name
+            }
+        }
     }
 
-    override fun getItemCount(): Int = diaries.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = DiaryViewHolder(
+        LayoutInflater.from(parent.context).inflate(
+            R.layout.diaries_list,
+            parent,
+            false
+        )
+    )
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val diary = diaries[position]
-
-        holder.name?.text = diary.name
+    override fun onBindViewHolder(holder: DiaryViewHolder, position: Int) {
+        val item = getItem(position) ?: return
+        holder.bindTo(item)
     }
 
-    // Pass a new list of episodes and notify
-    fun updateDiariesList(diaries: List<Diary>) {
-        this.diaries = diaries
-        notifyItemInserted(diaries.size)
-    }
 
-    class ViewHolder (episodeView : View) : RecyclerView.ViewHolder(episodeView) {
-        val name = episodeView.diary_name
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Diary>() {
+
+            override fun areItemsTheSame(oldItem: Diary, newItem: Diary) =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: Diary, newItem: Diary) =
+                oldItem.name == newItem.name
+        }
     }
 }
