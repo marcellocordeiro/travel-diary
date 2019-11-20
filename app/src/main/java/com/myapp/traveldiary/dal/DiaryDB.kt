@@ -9,22 +9,24 @@ import com.myapp.traveldiary.dal.dao.DiaryDao
 
 @Database(entities = [Diary::class], version = 1)
 abstract class DiaryDB : RoomDatabase() {
+
     abstract fun diaryDao(): DiaryDao
 
     companion object {
+
         private var INSTANCE: DiaryDB? = null
 
-        fun getDatabase(ctx: Context): DiaryDB {
-            if (INSTANCE == null) {
-                synchronized(DiaryDB::class) {
-                    INSTANCE = Room.databaseBuilder(
-                        ctx.applicationContext,
-                        DiaryDB::class.java,
-                        "diaries_name")
-                        .build()
-                }
+        fun getInstance(context: Context): DiaryDB =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE
+                    ?: buildDatabase(context).also { INSTANCE = it }
             }
-            return INSTANCE!!
-        }
+
+        private fun buildDatabase(context: Context) =
+            Room.databaseBuilder(
+                context.applicationContext,
+                DiaryDB::class.java,
+                "diaries_name"
+            ).build()
     }
 }

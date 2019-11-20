@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        diaryDB = DiaryDB.getDatabase(this)
+        diaryDB = DiaryDB.getInstance(this)
 
         viewManager = LinearLayoutManager(this)
         viewAdapter = ListDiariesAdapter(emptyList(), this)
