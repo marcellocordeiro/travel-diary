@@ -1,9 +1,8 @@
 package com.myapp.traveldiary
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_diary_modification.*
 
 class DiaryModificationActivity : AppCompatActivity() {
@@ -18,5 +17,4 @@ class DiaryModificationActivity : AppCompatActivity() {
                 .setAction("Action", null).show()
         }
     }
-
 }

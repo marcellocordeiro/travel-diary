@@ -25,7 +25,7 @@ import org.jetbrains.anko.doAsync
 // Diary overview
 
 class MainActivity : AppCompatActivity() {
-    private var diaryDB: DiaryDB? = null
+
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,9 +43,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showDiaryList() {
-        diaryDB = DiaryDB.getInstance(this)
-
+    private fun showDiaryList() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = ListDiariesAdapter()
@@ -66,7 +64,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createPopUpWindow(view: View) {
-        val inflater: LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val inflater: LayoutInflater =
+            getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupView: View = inflater.inflate(R.layout.activity_diary_creation, null)
         val layout = LinearLayout.LayoutParams.WRAP_CONTENT
         val focusable = true
@@ -82,12 +81,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun createDiaryOnCreateDiaryButtonClick(view: View, popupWindow: PopupWindow) {
         view.findViewById<Button>(R.id.create_diary).setOnClickListener {
-            val diaryName = view.findViewById<TextInputEditText>(R.id.diary_name_input).text.toString()
+            val diaryName =
+                view.findViewById<TextInputEditText>(R.id.diary_name_input).text.toString()
 
             doAsync {
+                val diaryDB = DiaryDB.getInstance(applicationContext)
                 val diary = Diary(name = diaryName)
 
-                diaryDB!!.diaryDao().insert(diary)
+                diaryDB.diaryDao().insert(diary)
             }
 
             popupWindow.dismiss()
