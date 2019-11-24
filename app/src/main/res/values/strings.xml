@@ -111,8 +111,9 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="title_activity_event_creation">EventCreationActivity</string>
     <string name="title_activity_event_modification">EventModificationActivity</string>
+    <string name="title_activity_event_list">Events</string>
     <string name="title_activity_diary_creation">DiaryCreationActivity</string>
     <string name="title_activity_diary_modification">DiaryModificationActivity</string>
 
-    <string name="diary_name_header">Diary name:</string>
+    <string name="diary_name_header">Diary name</string>
 </resources>

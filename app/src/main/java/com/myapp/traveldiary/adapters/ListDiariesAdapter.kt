@@ -1,12 +1,15 @@
 package com.myapp.traveldiary.adapters
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.myapp.traveldiary.EventListActivity
 import com.myapp.traveldiary.R
 import com.myapp.traveldiary.dal.dao.Diary
 
@@ -34,10 +37,21 @@ class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder
     override fun onBindViewHolder(holder: DiaryViewHolder, position: Int) {
         val item = getItem(position) ?: return
         holder.bindTo(item)
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context, EventListActivity::class.java).apply {
+                putExtra(DIARY_NAME, item.name)
+                putExtra(DIARY_ID, item.id)
+            }
+
+            startActivity(holder.itemView.context, intent, null)
+        }
     }
 
 
     companion object {
+        private const val DIARY_NAME = "com.myapp.traveldiary.DIARY_NAME"
+        private const val DIARY_ID = "com.myapp.traveldiary.DIARY_ID"
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Diary>() {
 
             override fun areItemsTheSame(oldItem: Diary, newItem: Diary) =
