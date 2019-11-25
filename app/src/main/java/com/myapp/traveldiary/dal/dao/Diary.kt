@@ -4,15 +4,15 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "diaries_name")
+@Entity(tableName = "diaries")
 data class Diary(
     @ColumnInfo(name = "name") val name: String
 ) {
 
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+    var uid: Long = 0
 
     override fun toString(): String {
-        return "$id, $name"
+        return "$uid, $name"
     }
 }

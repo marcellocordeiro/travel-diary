@@ -9,9 +9,10 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.myapp.traveldiary.EventListActivity
+import com.myapp.traveldiary.EventOverviewActivity
 import com.myapp.traveldiary.R
 import com.myapp.traveldiary.dal.dao.Diary
+import org.jetbrains.anko.sdk27.coroutines.onClick
 
 class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder>(DIFF_CALLBACK) {
 
@@ -22,13 +23,21 @@ class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder
         fun bindTo(item: Diary) {
             name.apply {
                 text = item.name
+
+                onClick {
+                    Intent(context, EventOverviewActivity::class.java).apply {
+                        putExtra(DIARY_ID, item.uid)
+                    }.also {
+                        startActivity(context, it, null)
+                    }
+                }
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = DiaryViewHolder(
         LayoutInflater.from(parent.context).inflate(
-            R.layout.diary_entry,
+            R.layout.entry_diary,
             parent,
             false
         )
@@ -39,23 +48,20 @@ class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder
         holder.bindTo(item)
 
         holder.itemView.setOnClickListener {
-            val intent = Intent(holder.itemView.context, EventListActivity::class.java).apply {
-                putExtra(DIARY_NAME, item.name)
-                putExtra(DIARY_ID, item.id)
-            }
 
-            startActivity(holder.itemView.context, intent, null)
         }
     }
 
 
     companion object {
+
         private const val DIARY_NAME = "com.myapp.traveldiary.DIARY_NAME"
         private const val DIARY_ID = "com.myapp.traveldiary.DIARY_ID"
+
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Diary>() {
 
             override fun areItemsTheSame(oldItem: Diary, newItem: Diary) =
-                oldItem.id == newItem.id
+                oldItem.uid == newItem.uid
 
             override fun areContentsTheSame(oldItem: Diary, newItem: Diary) =
                 oldItem.name == newItem.name

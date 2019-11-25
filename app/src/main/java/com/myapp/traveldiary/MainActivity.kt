@@ -16,11 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.myapp.traveldiary.adapters.ListDiariesAdapter
-import com.myapp.traveldiary.dal.DiaryDB
+import com.myapp.traveldiary.dal.AppDatabase
 import com.myapp.traveldiary.dal.dao.Diary
 import com.myapp.traveldiary.dal.dao.DiaryViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.sdk27.coroutines.onClick
 
 // Diary overview
 
@@ -39,7 +40,6 @@ class MainActivity : AppCompatActivity() {
 
         start_create_diary.setOnClickListener { view ->
             createPopUpWindow(view)
-
         }
     }
 
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 view.findViewById<TextInputEditText>(R.id.diary_name_input).text.toString()
 
             doAsync {
-                val diaryDB = DiaryDB.getInstance(applicationContext)
+                val diaryDB = AppDatabase.getInstance(applicationContext)
                 val diary = Diary(name = diaryName)
 
                 diaryDB.diaryDao().insert(diary)

@@ -7,11 +7,11 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface DiaryDao {
+interface EventDao {
 
-    @Query("SELECT * FROM diaries")
-    fun selectAll(): LiveData<List<Diary>>
+    @Query("SELECT * FROM events WHERE diary_id = :uid")
+    fun selectAllEvents(uid: Long): LiveData<List<Event>>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insert(diary: Diary)
+    fun insert(item: Event)
 }

@@ -6,17 +6,20 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.myapp.traveldiary.dal.dao.Diary
 import com.myapp.traveldiary.dal.dao.DiaryDao
+import com.myapp.traveldiary.dal.dao.Event
+import com.myapp.traveldiary.dal.dao.EventDao
 
-@Database(entities = [Diary::class], version = 1)
-abstract class DiaryDB : RoomDatabase() {
+@Database(entities = [Diary::class, Event::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
 
     abstract fun diaryDao(): DiaryDao
+    abstract fun eventDao(): EventDao
 
     companion object {
 
-        private var INSTANCE: DiaryDB? = null
+        private var INSTANCE: AppDatabase? = null
 
-        fun getInstance(context: Context): DiaryDB =
+        fun getInstance(context: Context): AppDatabase =
             INSTANCE ?: synchronized(this) {
                 INSTANCE
                     ?: buildDatabase(context).also { INSTANCE = it }
@@ -25,8 +28,8 @@ abstract class DiaryDB : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                DiaryDB::class.java,
-                "diaries_name"
+                AppDatabase::class.java,
+                "app.db"
             ).build()
     }
 }
