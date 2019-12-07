@@ -9,7 +9,7 @@ import com.myapp.traveldiary.dal.dao.DiaryDao
 import com.myapp.traveldiary.dal.dao.Event
 import com.myapp.traveldiary.dal.dao.EventDao
 
-@Database(entities = [Diary::class, Event::class], version = 1)
+@Database(entities = [Diary::class, Event::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun diaryDao(): DiaryDao
@@ -30,6 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
                 context.applicationContext,
                 AppDatabase::class.java,
                 "app.db"
-            ).build()
+            ).fallbackToDestructiveMigration()
+            .build()
     }
 }

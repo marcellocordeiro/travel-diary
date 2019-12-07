@@ -6,13 +6,16 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "diaries")
 data class Diary(
-    @ColumnInfo(name = "name") val name: String
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name= "start_date") val startDate: Long,
+    @ColumnInfo(name = "end_date") val endDate: Long,
+    @ColumnInfo(name = "location") val location: String
 ) {
 
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0
 
     override fun toString(): String {
-        return "$uid, $name"
+        return "$uid, $name, $startDate, $endDate, $location"
     }
 }
