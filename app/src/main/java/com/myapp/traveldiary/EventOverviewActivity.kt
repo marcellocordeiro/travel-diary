@@ -20,13 +20,13 @@ import com.myapp.traveldiary.adapters.ListEventsAdapter
 import com.myapp.traveldiary.dal.AppDatabase
 import com.myapp.traveldiary.dal.dao.Event
 import com.myapp.traveldiary.dal.dao.EventViewModel
-import kotlinx.android.synthetic.main.activity_event_overview.toolbar
+import kotlinx.android.synthetic.main.activity_event_overview.*
 import org.jetbrains.anko.doAsync
 
 class EventOverviewActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var createFab : FloatingActionButton
+    private lateinit var createFab: FloatingActionButton
     private var diaryId: Long = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {

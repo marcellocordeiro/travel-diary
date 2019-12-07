@@ -19,14 +19,6 @@ class ListEventsAdapter : ListAdapter<Event, ListEventsAdapter.EventViewHolder>(
         fun bindTo(item: Event) {
             name.apply {
                 text = item.name
-
-                /*onClick {
-                    Intent(context, EventOverviewActivity::class.java).apply {
-                        putExtra(EVENT_ID, item.id)
-                    }.also {
-                        startActivity(context, it, null)
-                    }
-                }*/
             }
         }
     }
@@ -40,14 +32,8 @@ class ListEventsAdapter : ListAdapter<Event, ListEventsAdapter.EventViewHolder>(
     )
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val item = getItem(position) ?: return
-        holder.bindTo(item)
-
-        holder.itemView.setOnClickListener {
-
-        }
+        holder.bindTo(getItem(position))
     }
-
 
     companion object {
 

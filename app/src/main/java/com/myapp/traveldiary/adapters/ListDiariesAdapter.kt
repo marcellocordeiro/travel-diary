@@ -1,11 +1,9 @@
 package com.myapp.traveldiary.adapters
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +11,7 @@ import com.myapp.traveldiary.EventOverviewActivity
 import com.myapp.traveldiary.R
 import com.myapp.traveldiary.dal.dao.Diary
 import org.jetbrains.anko.sdk27.coroutines.onClick
+import org.jetbrains.anko.startActivity
 
 class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder>(DIFF_CALLBACK) {
 
@@ -25,11 +24,7 @@ class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder
                 text = item.name
 
                 onClick {
-                    Intent(context, EventOverviewActivity::class.java).apply {
-                        putExtra(DIARY_ID, item.uid)
-                    }.also {
-                        startActivity(context, it, null)
-                    }
+                    context.startActivity<EventOverviewActivity>(DIARY_ID to item.uid)
                 }
             }
         }
@@ -44,18 +39,11 @@ class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder
     )
 
     override fun onBindViewHolder(holder: DiaryViewHolder, position: Int) {
-        val item = getItem(position) ?: return
-        holder.bindTo(item)
-
-        holder.itemView.setOnClickListener {
-
-        }
+        holder.bindTo(getItem(position))
     }
-
 
     companion object {
 
-        private const val DIARY_NAME = "com.myapp.traveldiary.DIARY_NAME"
         private const val DIARY_ID = "com.myapp.traveldiary.DIARY_ID"
 
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Diary>() {

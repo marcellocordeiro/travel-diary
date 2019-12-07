@@ -21,7 +21,6 @@ import com.myapp.traveldiary.dal.dao.Diary
 import com.myapp.traveldiary.dal.dao.DiaryViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.sdk27.coroutines.onClick
 
 // Diary overview
 
