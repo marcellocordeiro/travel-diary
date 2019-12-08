@@ -52,7 +52,7 @@ class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder
                 oldItem.uid == newItem.uid
 
             override fun areContentsTheSame(oldItem: Diary, newItem: Diary) =
-                oldItem.name == newItem.name
+                oldItem.toString() == oldItem.toString()
         }
     }
 }

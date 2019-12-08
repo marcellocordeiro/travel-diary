@@ -16,6 +16,6 @@ data class Diary(
     var uid: Long = 0
 
     override fun toString(): String {
-        return "$uid, $name, $startDate, $endDate, $location"
+        return "$name, $startDate, $endDate, $location"
     }
 }
