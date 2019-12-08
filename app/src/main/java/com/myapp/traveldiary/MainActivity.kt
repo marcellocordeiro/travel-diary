@@ -77,16 +77,23 @@ class MainActivity : AppCompatActivity() {
 
         createDiaryOnCreateDiaryButtonClick(popupView, popupWindow)
         chooseStartDate(popupView)
+        chooseEndDate(popupView)
     }
 
     private fun createDiaryOnCreateDiaryButtonClick(view: View, popupWindow: PopupWindow) {
         view.findViewById<Button>(R.id.create_diary).setOnClickListener {
             val diaryName =
                 view.findViewById<TextInputEditText>(R.id.diary_name_input).text.toString()
+            val location = view.findViewById<TextInputEditText>(R.id.location_input).text.toString()
+            val startDateText = view.findViewById<TextView>(R.id.start_date_text).text.toString()
+            val endDateText = view.findViewById<TextView>(R.id.end_date_text).text.toString()
+
+            val startDate = DateHelper.parseToLong(startDateText)
+            val endDate = DateHelper.parseToLong(endDateText)
 
             doAsync {
                 val diaryDB = AppDatabase.getInstance(applicationContext)
-                val diary = Diary(name = diaryName, startDate = 1, endDate = 2, location = "xalala")
+                val diary = Diary(name = diaryName, startDate = startDate, endDate = endDate, location = location)
 
                 diaryDB.diaryDao().insert(diary)
             }
@@ -105,10 +112,28 @@ class MainActivity : AppCompatActivity() {
         val day = c.get(Calendar.DAY_OF_MONTH)
 
         mPickTimeBtn.setOnClickListener {
-            Toast.makeText(applicationContext, "oxe", Toast.LENGTH_SHORT)
             val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 // Display Selected date in TextView
-                textView.text = "$dayOfMonth $month, $year"
+                textView.text = "$dayOfMonth/$month/$year"
+            }, year, month, day)
+            dpd.show()
+
+        }
+    }
+
+    private fun chooseEndDate(view: View) {
+        val mPickTimeBtn = view.findViewById<Button>(R.id.end_date_btn)
+        val textView     = view.findViewById<TextView>(R.id.end_date_text)
+
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        mPickTimeBtn.setOnClickListener {
+            val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                // Display Selected date in TextView
+                textView.text = "$dayOfMonth/$month/$year"
             }, year, month, day)
             dpd.show()
 

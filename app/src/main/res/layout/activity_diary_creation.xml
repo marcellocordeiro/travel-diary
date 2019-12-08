@@ -28,22 +28,42 @@
             android:id="@+id/diary_name_input"
             android:layout_width="214dp"
             android:layout_height="48dp"
-            android:layout_gravity="center_vertical|center_horizontal" />
-
-        <Button
-            android:id="@+id/create_diary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:text="Create diary"
-            android:textSize="12sp" />
+            android:hint="Ex: Recife Travel" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/diary_name_input_layout"
+        android:layout_centerHorizontal="true"
+        android:text="Location"
+        android:layout_marginTop="5dp"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/location_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_below="@id/location"
+        android:layout_marginTop="5dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/location_input"
+            android:layout_width="214dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:hint="Ex: Recife, Pernambuco" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/start_date_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/diary_name_input_layout"
+        android:layout_below="@id/location_input_layout"
         android:layout_centerHorizontal="true"
         android:text="start date" />
 
@@ -54,6 +74,32 @@
         android:layout_below="@id/start_date_btn"
         android:layout_centerHorizontal="true"
         android:text="dd/MM/yyyy"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/end_date_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_date_text"
+        android:layout_centerInParent="true"
+        android:text="end date" />
+
+    <TextView
+        android:id="@+id/end_date_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/end_date_btn"
+        android:layout_centerHorizontal="true"
+        android:text="dd/MM/yyyy"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/create_diary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/end_date_text"
+        android:text="Create diary"
         android:textSize="12sp" />
 
 </RelativeLayout>
