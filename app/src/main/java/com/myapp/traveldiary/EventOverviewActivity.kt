@@ -83,7 +83,16 @@ class EventOverviewActivity : AppCompatActivity() {
             doAsync {
                 val eventDb = AppDatabase.getInstance(applicationContext).eventDao()
 
-                eventDb.insert(Event(diaryName, diaryId, Calendar.getInstance().time.time, "my description", "my location"))
+                eventDb.insert(
+                    Event(
+                        diaryName,
+                        diaryId,
+                        Calendar.getInstance().time.time,
+                        "my description",
+                        "my location",
+                        null
+                    )
+                )
             }
 
             popupWindow.dismiss()

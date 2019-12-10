@@ -18,11 +18,13 @@ data class Event(
     @ColumnInfo(name = "diary_id") val diaryId: Long,
     @ColumnInfo(name = "start_date") val startDate: Long,
     @ColumnInfo(name = "description") val description: String,
-    @ColumnInfo(name = "location") val location: String
+    @ColumnInfo(name = "location") val location: String,
+    @ColumnInfo(name = "image_path") val imagePath: String?
 ) {
 
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0
+
 
     override fun toString(): String {
         return "$uid, $name"
