@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.myapp.traveldiary.DateHelper
 import com.myapp.traveldiary.EventOverviewActivity
 import com.myapp.traveldiary.R
 import com.myapp.traveldiary.dal.dao.Diary
@@ -18,6 +19,10 @@ class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder
     class DiaryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val name: TextView = view.findViewById(R.id.diary_name)
+        private val location: TextView = view.findViewById(R.id.diary_location)
+        private val startDate: TextView = view.findViewById(R.id.diary_start_date)
+        private val endDate: TextView = view.findViewById(R.id.diary_end_date)
+        //private val deleteButton: ImageView = view.findViewById(R.id.delete_button)
 
         fun bindTo(item: Diary) {
             name.apply {
@@ -26,6 +31,18 @@ class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder
                 onClick {
                     context.startActivity<EventOverviewActivity>(DIARY_ID to item.uid)
                 }
+            }
+
+            location.apply {
+                location.text = item.location
+            }
+
+            startDate.apply {
+                startDate.text = DateHelper.parseToString(context, item.startDate)
+            }
+
+            endDate.apply {
+                endDate.text = DateHelper.parseToString(context, item.endDate)
             }
         }
     }
