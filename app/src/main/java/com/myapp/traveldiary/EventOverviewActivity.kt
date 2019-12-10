@@ -1,6 +1,7 @@
 package com.myapp.traveldiary
 
 import android.content.Context
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -11,7 +12,6 @@ import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -51,13 +51,6 @@ class EventOverviewActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(context)
             adapter = ListEventsAdapter()
             //setHasFixedSize(true)
-
-            addItemDecoration(
-                DividerItemDecoration(
-                    context,
-                    (layoutManager as LinearLayoutManager).orientation
-                )
-            )
         }
 
         val model = ViewModelProviders.of(this).get(EventViewModel::class.java)
@@ -90,7 +83,16 @@ class EventOverviewActivity : AppCompatActivity() {
             doAsync {
                 val eventDb = AppDatabase.getInstance(applicationContext).eventDao()
 
-                eventDb.insert(Event(diaryName, diaryId))
+                eventDb.insert(
+                    Event(
+                        diaryName,
+                        diaryId,
+                        Calendar.getInstance().time.time,
+                        "my description",
+                        "my location",
+                        null
+                    )
+                )
             }
 
             popupWindow.dismiss()

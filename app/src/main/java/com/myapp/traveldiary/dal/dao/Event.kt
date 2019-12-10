@@ -5,10 +5,21 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "events", foreignKeys = [ForeignKey(entity = Diary::class, parentColumns = ["uid"], childColumns = ["diary_id"])])
+@Entity(
+    tableName = "events",
+    foreignKeys = [ForeignKey(
+        entity = Diary::class,
+        parentColumns = ["uid"],
+        childColumns = ["diary_id"]
+    )]
+)
 data class Event(
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "diary_id") val diaryId: Long
+    @ColumnInfo(name = "diary_id") val diaryId: Long,
+    @ColumnInfo(name = "start_date") val startDate: Long,
+    @ColumnInfo(name = "description") val description: String,
+    @ColumnInfo(name = "location") val location: String,
+    @ColumnInfo(name = "image_path") val imagePath: String?
 ) {
 
     @PrimaryKey(autoGenerate = true)
