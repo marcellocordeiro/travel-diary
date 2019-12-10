@@ -123,8 +123,9 @@ class MainActivity : AppCompatActivity() {
             val dpd = DatePickerDialog(
                 this,
                 DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+
                     // Display Selected date in TextView
-                    textView.text = "$dayOfMonth/$month/$year"
+                    textView.text = "$dayOfMonth/" + (monthOfYear + 1) + "/$year"
                 },
                 year,
                 month,
@@ -149,7 +150,7 @@ class MainActivity : AppCompatActivity() {
                 this,
                 DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                     // Display Selected date in TextView
-                    textView.text = "$dayOfMonth/$month/$year"
+                    textView.text = "$dayOfMonth/" + (monthOfYear + 1) + "/$year"
                 },
                 year,
                 month,
