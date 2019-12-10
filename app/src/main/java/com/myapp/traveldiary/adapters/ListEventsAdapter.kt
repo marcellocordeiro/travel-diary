@@ -3,22 +3,40 @@ package com.myapp.traveldiary.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.myapp.traveldiary.DateHelper
 import com.myapp.traveldiary.R
 import com.myapp.traveldiary.dal.dao.Event
+import org.jetbrains.anko.find
 
 class ListEventsAdapter : ListAdapter<Event, ListEventsAdapter.EventViewHolder>(DIFF_CALLBACK) {
 
     class EventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        private val image: ImageView = view.findViewById(R.id.event_image)
         private val name: TextView = view.findViewById(R.id.event_name)
+        private val location: TextView = view.findViewById(R.id.location)
+        private val startDate: TextView = view.findViewById(R.id.start_date)
 
         fun bindTo(item: Event) {
+            image.apply {
+                setImageResource(R.drawable.d2)
+            }
+
             name.apply {
                 text = item.name
+            }
+
+            location.apply {
+                text = item.location
+            }
+
+            startDate.apply {
+                text = DateHelper.parseToString(context, item.startDate)
             }
         }
     }
