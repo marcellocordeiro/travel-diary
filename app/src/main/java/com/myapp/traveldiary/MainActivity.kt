@@ -1,10 +1,11 @@
 package com.myapp.traveldiary
 
 import android.app.DatePickerDialog
-import android.app.Dialog
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -18,8 +19,6 @@ import com.myapp.traveldiary.dal.dao.DiaryViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.sdk27.coroutines.onClick
-import org.jetbrains.anko.uiThread
-import java.util.*
 
 // Diary overview
 
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showDiaryList() {
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
-        
+
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = ListDiariesAdapter()
@@ -54,19 +53,19 @@ class MainActivity : AppCompatActivity() {
     private fun showPopup() {
         val diaryDb = AppDatabase.getInstance(applicationContext).diaryDao()
 
-        val dialog = Dialog(this).apply {
-            setContentView(R.layout.popup_diary_creation)
+        val view = layoutInflater.inflate(R.layout.popup_diary_creation, null)
+
+        val builder = AlertDialog.Builder(this).apply {
+            setView(view)
         }
 
-        val nameInput: TextInputEditText = dialog.findViewById(R.id.diary_name_input)
-        val locationInput: TextInputEditText = dialog.findViewById(R.id.location_input)
-        val startDateInput: TextView = dialog.findViewById(R.id.start_date_text)
-        val endDateInput: TextView = dialog.findViewById(R.id.end_date_text)
+        val nameInput: TextInputEditText = view.findViewById(R.id.diary_name_input)
+        val locationInput: TextInputEditText = view.findViewById(R.id.location_input)
+        val startDateInput: TextView = view.findViewById(R.id.start_date_text)
+        val endDateInput: TextView = view.findViewById(R.id.end_date_text)
 
-        val startDateButton: Button = dialog.findViewById(R.id.start_date_btn)
-        val endDateButton: Button = dialog.findViewById(R.id.end_date_btn)
-        val confirmButton: Button = dialog.findViewById(R.id.create_diary)
-
+        val startDateButton: Button = view.findViewById(R.id.start_date_btn)
+        val endDateButton: Button = view.findViewById(R.id.end_date_btn)
 
         startDateButton.onClick {
             datePicker(startDateInput)
@@ -76,24 +75,31 @@ class MainActivity : AppCompatActivity() {
             datePicker(endDateInput)
         }
 
-        confirmButton.onClick {
-            val name = nameInput.text.toString()
-            val location = locationInput.text.toString()
-            val startDate = DateHelper.parseToLong(startDateInput.text.toString())
-            val endDate = DateHelper.parseToLong(endDateInput.text.toString())
+        builder.apply {
+            setPositiveButton(
+                "OK"
+            ) { dialog, id ->
+                val name = nameInput.text.toString()
+                val location = locationInput.text.toString()
+                val startDate = DateHelper.parseToLong(startDateInput.text.toString())
+                val endDate = DateHelper.parseToLong(endDateInput.text.toString())
 
-            val newDiary = Diary(name, location, startDate, endDate)
+                val newDiary = Diary(name, location, startDate, endDate)
 
-            doAsync {
-                diaryDb.insert(newDiary)
-
-                uiThread {
-                    dialog.dismiss()
+                doAsync {
+                    diaryDb.insert(newDiary)
                 }
             }
+
+            setNegativeButton(
+                "Cancel"
+            ) { dialog, id ->
+
+            }
+
         }
 
-        dialog.show()
+        builder.create().show()
     }
 
     private fun datePicker(textView: TextView) {

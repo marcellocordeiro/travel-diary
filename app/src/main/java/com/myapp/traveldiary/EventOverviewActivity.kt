@@ -1,9 +1,10 @@
 package com.myapp.traveldiary
 
-import android.app.Dialog
-import android.icu.util.Calendar
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -18,8 +19,6 @@ import com.myapp.traveldiary.dal.dao.EventViewModel
 import kotlinx.android.synthetic.main.activity_event_overview.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.sdk27.coroutines.onClick
-import org.jetbrains.anko.uiThread
-
 
 class EventOverviewActivity : AppCompatActivity() {
 
@@ -59,30 +58,71 @@ class EventOverviewActivity : AppCompatActivity() {
     private fun showPopup() {
         val eventDb = AppDatabase.getInstance(applicationContext).eventDao()
 
-        val dialog = Dialog(this).apply {
-            setContentView(R.layout.popup_event_creation)
+        val view = layoutInflater.inflate(R.layout.popup_event_creation, null)
+
+        val builder = AlertDialog.Builder(this).apply {
+            setView(view)
         }
 
-        val confirmButton: Button = dialog.findViewById(R.id.create_diary)
-        val nameInput: TextInputEditText = dialog.findViewById(R.id.diary_name_input)
+        val nameInput: TextInputEditText = view.findViewById(R.id.diary_name_input)
+        val locationInput: TextInputEditText = view.findViewById(R.id.location_input)
+        val startDateInput: TextView = view.findViewById(R.id.start_date_text)
+        val endDateInput: TextView = view.findViewById(R.id.end_date_text)
 
-        confirmButton.onClick {
-            val name = nameInput.text.toString()
-            val location = "my location"
-            val startDate = Calendar.getInstance().time.time
-            val imagePath: String? = null
+        val startDateButton: Button = view.findViewById(R.id.start_date_btn)
+        val endDateButton: Button = view.findViewById(R.id.end_date_btn)
 
-            val newEvent = Event(diaryId, name, location, startDate, imagePath)
+        startDateButton.onClick {
+            datePicker(startDateInput)
+        }
 
-            doAsync {
-                eventDb.insert(newEvent)
+        endDateButton.onClick {
+            datePicker(endDateInput)
+        }
 
-                uiThread {
-                    dialog.dismiss()
+        builder.apply {
+            setPositiveButton(
+                "OK"
+            ) { dialog, id ->
+                val name = nameInput.text.toString()
+                val location = locationInput.text.toString()
+                val startDate = DateHelper.parseToLong(startDateInput.text.toString())
+                val endDate = DateHelper.parseToLong(endDateInput.text.toString())
+                val imagePath: String? = null
+
+                val newEvent = Event(diaryId, name, location, startDate, imagePath)
+
+                doAsync {
+                    eventDb.insert(newEvent)
                 }
             }
+            
+            setNegativeButton(
+                "Cancel"
+            ) { dialog, id ->
+
+            }
+
         }
 
-        dialog.show()
+        builder.create().show()
+    }
+
+    private fun datePicker(textView: TextView) {
+        val c = java.util.Calendar.getInstance()
+        val year = c.get(java.util.Calendar.YEAR)
+        val month = c.get(java.util.Calendar.MONTH)
+        val day = c.get(java.util.Calendar.DAY_OF_MONTH)
+
+        val dpd = DatePickerDialog(
+            this,
+            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                textView.text = "$dayOfMonth/" + (monthOfYear + 1) + "/$year"
+            },
+            year,
+            month,
+            day
+        )
+        dpd.show()
     }
 }
