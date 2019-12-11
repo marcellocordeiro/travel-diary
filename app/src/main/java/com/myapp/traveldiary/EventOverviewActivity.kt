@@ -66,18 +66,12 @@ class EventOverviewActivity : AppCompatActivity() {
 
         val nameInput: TextInputEditText = view.findViewById(R.id.diary_name_input)
         val locationInput: TextInputEditText = view.findViewById(R.id.location_input)
-        val startDateInput: TextView = view.findViewById(R.id.start_date_text)
-        val endDateInput: TextView = view.findViewById(R.id.end_date_text)
+        val dateInput: TextView = view.findViewById(R.id.date_text)
 
-        val startDateButton: Button = view.findViewById(R.id.start_date_btn)
-        val endDateButton: Button = view.findViewById(R.id.end_date_btn)
+        val dateButton: Button = view.findViewById(R.id.date_btn)
 
-        startDateButton.onClick {
-            datePicker(startDateInput)
-        }
-
-        endDateButton.onClick {
-            datePicker(endDateInput)
+        dateButton.onClick {
+            datePicker(dateInput)
         }
 
         builder.apply {
@@ -86,8 +80,7 @@ class EventOverviewActivity : AppCompatActivity() {
             ) { dialog, id ->
                 val name = nameInput.text.toString()
                 val location = locationInput.text.toString()
-                val startDate = DateHelper.parseToLong(startDateInput.text.toString())
-                val endDate = DateHelper.parseToLong(endDateInput.text.toString())
+                val startDate = DateHelper.parseToLong(dateInput.text.toString())
                 val imagePath: String? = null
 
                 val newEvent = Event(diaryId, name, location, startDate, imagePath)
