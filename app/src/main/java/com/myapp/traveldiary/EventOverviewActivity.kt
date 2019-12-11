@@ -1,14 +1,9 @@
 package com.myapp.traveldiary
 
-import android.content.Context
+import android.app.Dialog
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -22,6 +17,9 @@ import com.myapp.traveldiary.dal.dao.Event
 import com.myapp.traveldiary.dal.dao.EventViewModel
 import kotlinx.android.synthetic.main.activity_event_overview.*
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.sdk27.coroutines.onClick
+import org.jetbrains.anko.uiThread
+
 
 class EventOverviewActivity : AppCompatActivity() {
 
@@ -41,8 +39,8 @@ class EventOverviewActivity : AppCompatActivity() {
 
         showEventList()
 
-        createFab.setOnClickListener { view ->
-            createPopUpWindow(view)
+        createFab.onClick {
+            showPopup()
         }
     }
 
@@ -50,7 +48,6 @@ class EventOverviewActivity : AppCompatActivity() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = ListEventsAdapter()
-            //setHasFixedSize(true)
         }
 
         val model = ViewModelProviders.of(this).get(EventViewModel::class.java)
@@ -59,43 +56,33 @@ class EventOverviewActivity : AppCompatActivity() {
             Observer { (recyclerView.adapter as ListEventsAdapter).submitList(it) })
     }
 
-    private fun createPopUpWindow(view: View) {
-        val inflater: LayoutInflater =
-            getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val popupView: View = inflater.inflate(R.layout.activity_diary_creation, null)
-        val layout = LinearLayout.LayoutParams.WRAP_CONTENT
-        val focusable = true
+    private fun showPopup() {
+        val eventDb = AppDatabase.getInstance(applicationContext).eventDao()
 
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window tolken
-        val popupWindow = PopupWindow(popupView, layout, layout, focusable)
+        val dialog = Dialog(this).apply {
+            setContentView(R.layout.popup_event_creation)
+        }
 
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
+        val confirmButton: Button = dialog.findViewById(R.id.create_diary)
+        val nameInput: TextInputEditText = dialog.findViewById(R.id.diary_name_input)
 
-        createDiaryOnCreateDiaryButtonClick(popupView, popupWindow)
-    }
+        confirmButton.onClick {
+            val name = nameInput.text.toString()
+            val location = "my location"
+            val startDate = Calendar.getInstance().time.time
+            val imagePath: String? = null
 
-    private fun createDiaryOnCreateDiaryButtonClick(view: View, popupWindow: PopupWindow) {
-        view.findViewById<Button>(R.id.create_diary).setOnClickListener {
-            val diaryName =
-                view.findViewById<TextInputEditText>(R.id.diary_name_input).text.toString()
+            val newEvent = Event(diaryId, name, location, startDate, imagePath)
 
             doAsync {
-                val eventDb = AppDatabase.getInstance(applicationContext).eventDao()
+                eventDb.insert(newEvent)
 
-                eventDb.insert(
-                    Event(
-                        diaryName,
-                        diaryId,
-                        Calendar.getInstance().time.time,
-                        "my description",
-                        "my location",
-                        null
-                    )
-                )
+                uiThread {
+                    dialog.dismiss()
+                }
             }
-
-            popupWindow.dismiss()
         }
+
+        dialog.show()
     }
 }
