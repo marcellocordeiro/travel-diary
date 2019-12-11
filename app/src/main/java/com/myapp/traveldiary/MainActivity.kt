@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         val diaryDb = AppDatabase.getInstance(applicationContext).diaryDao()
 
         val dialog = Dialog(this).apply {
-            setContentView(R.layout.popup_event_creation)
+            setContentView(R.layout.popup_diary_creation)
         }
 
         val nameInput: TextInputEditText = dialog.findViewById(R.id.diary_name_input)
