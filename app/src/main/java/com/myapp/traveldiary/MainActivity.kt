@@ -1,8 +1,13 @@
 package com.myapp.traveldiary
 
+import android.Manifest
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.icu.util.Calendar
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -19,6 +24,8 @@ import com.myapp.traveldiary.dal.dao.DiaryViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.sdk27.coroutines.onClick
+import pub.devrel.easypermissions.EasyPermissions
+
 
 // Diary overview
 
@@ -29,11 +36,30 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        val permission = Manifest.permission.READ_EXTERNAL_STORAGE
+
+        if (EasyPermissions.hasPermissions(this, permission)) {
+            // Already have permission, do the thing
+            // ...
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "Read photos", 0, permission)
+        }
+
         showDiaryList()
 
         start_create_diary.onClick {
             showPopup()
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
     private fun showDiaryList() {

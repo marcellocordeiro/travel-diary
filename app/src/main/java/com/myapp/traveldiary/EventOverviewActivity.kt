@@ -1,7 +1,10 @@
 package com.myapp.traveldiary
 
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -19,12 +22,18 @@ import com.myapp.traveldiary.dal.dao.EventViewModel
 import kotlinx.android.synthetic.main.activity_event_overview.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.sdk27.coroutines.onClick
+import java.util.*
 
 class EventOverviewActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var createFab: FloatingActionButton
     private var diaryId: Long = -1
+
+    companion object {
+
+        val eventUidQueue: Queue<Long> = ArrayDeque<Long>()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +52,28 @@ class EventOverviewActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            val eventUid = eventUidQueue.remove()
+            val uri = data?.data
+            Log.e("IMAGE_PATH", uri.toString())
+            Log.e("IMAGE_PATH", "UID: $eventUid")
+
+            val eventDao = AppDatabase.getInstance(applicationContext).eventDao()
+
+            doAsync {
+                eventDao.updateImagePath(eventUid, uri.toString())
+            }
+        }
+    }
+
     private fun showEventList() {
+        val activity = this
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = ListEventsAdapter()
+            adapter = ListEventsAdapter(activity)
         }
 
         val model = ViewModelProviders.of(this).get(EventViewModel::class.java)
@@ -89,13 +116,12 @@ class EventOverviewActivity : AppCompatActivity() {
                     eventDb.insert(newEvent)
                 }
             }
-            
+
             setNegativeButton(
                 "Cancel"
             ) { dialog, id ->
 
             }
-
         }
 
         builder.create().show()
