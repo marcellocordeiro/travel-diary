@@ -1,5 +1,7 @@
 package com.myapp.traveldiary.adapters
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +11,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.myapp.traveldiary.DateHelper
+import com.myapp.traveldiary.EventOverviewActivity
 import com.myapp.traveldiary.R
 import com.myapp.traveldiary.dal.AppDatabase
 import com.myapp.traveldiary.dal.dao.Event
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
-class ListEventsAdapter : ListAdapter<Event, ListEventsAdapter.EventViewHolder>(DIFF_CALLBACK) {
+class ListEventsAdapter(private val activity: EventOverviewActivity) :
+    ListAdapter<Event, ListEventsAdapter.EventViewHolder>(DIFF_CALLBACK) {
 
     class EventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -27,7 +31,7 @@ class ListEventsAdapter : ListAdapter<Event, ListEventsAdapter.EventViewHolder>(
 
         private val eventDao = AppDatabase.getInstance(view.context).eventDao()
 
-        fun bindTo(item: Event) {
+        fun bindTo(activity: EventOverviewActivity, item: Event) {
             deleteButton.apply {
                 onClick {
                     doAsync {
@@ -37,20 +41,18 @@ class ListEventsAdapter : ListAdapter<Event, ListEventsAdapter.EventViewHolder>(
             }
 
             image.apply {
-                setImageResource(R.drawable.ic_add_box_red_800_36dp)
+                if (item.imagePath == null) {
+                    setImageResource(R.drawable.ic_add_box_red_800_36dp)
+                } else {
+                    setImageURI(Uri.parse(item.imagePath))
+                }
 
                 onClick {
-                    val newPath = if (item.imagePath != null) {
-                        setImageResource(R.drawable.ic_add_box_red_800_36dp)
-                        null
-                    } else {
-                        setImageResource(R.drawable.d2)
-                        ""
-                    }
-
-                    doAsync {
-                        eventDao.updateImagePath(item.uid, newPath)
-                    }
+                    val intent = Intent()
+                    intent.type = "image/*"
+                    intent.action = Intent.ACTION_PICK
+                    EventOverviewActivity.eventUidQueue.add(item.uid)
+                    activity.startActivityForResult(Intent.createChooser(intent, "Select photo"), 1)
                 }
             }
 
@@ -77,7 +79,7 @@ class ListEventsAdapter : ListAdapter<Event, ListEventsAdapter.EventViewHolder>(
     )
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        holder.bindTo(getItem(position))
+        holder.bindTo(activity, getItem(position))
     }
 
     companion object {
@@ -88,7 +90,7 @@ class ListEventsAdapter : ListAdapter<Event, ListEventsAdapter.EventViewHolder>(
                 oldItem.uid == newItem.uid
 
             override fun areContentsTheSame(oldItem: Event, newItem: Event) =
-                oldItem.name == newItem.name
+                oldItem.imagePath == newItem.imagePath
         }
     }
 }

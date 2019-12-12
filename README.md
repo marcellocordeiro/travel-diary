@@ -4,19 +4,19 @@ Travel Diary is a simple diary app for all your travelling needs. You can create
 
 ## Features
 
-- [ ] Diary overview
-- [ ] Creation and modification of diaries
-- [ ] Event overview
+- [x] Diary overview
+- [x] Creation and modification of diaries
+- [x] Event overview
 - [ ] Creation and modification of each event in a diary
-  - [ ] Creation
+  - [x] Creation
   - [ ] Modification
-  - [ ] Marking as completed
+  - [x] Marking as completed
   - [ ] Fields:
-    - [ ] Name
-    - [ ] Date
-    - [ ] Location
+    - [x] Name
+    - [x] Date
+    - [x] Location
     - [ ] Description
-    - [ ] Completion photo
+    - [x] Completion photo
 - [ ] Possible future plans
   - [ ] ?
 
