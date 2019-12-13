@@ -15,6 +15,9 @@ data class Diary(
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0
 
+    @ColumnInfo(name = "completed")
+    var completed = true
+
     override fun toString(): String {
         return "$name, $startDate, $endDate, $location"
     }

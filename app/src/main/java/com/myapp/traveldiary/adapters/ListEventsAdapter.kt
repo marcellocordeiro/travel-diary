@@ -15,6 +15,7 @@ import com.myapp.traveldiary.EventOverviewActivity
 import com.myapp.traveldiary.R
 import com.myapp.traveldiary.dal.AppDatabase
 import com.myapp.traveldiary.dal.dao.Event
+import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
@@ -29,6 +30,7 @@ class ListEventsAdapter(private val activity: EventOverviewActivity) :
         private val startDate: TextView = view.findViewById(R.id.start_date)
         private val deleteButton: ImageView = view.findViewById(R.id.delete_button)
 
+        private val diaryDao = AppDatabase.getInstance(view.context).diaryDao()
         private val eventDao = AppDatabase.getInstance(view.context).eventDao()
 
         fun bindTo(activity: EventOverviewActivity, item: Event) {
@@ -36,16 +38,22 @@ class ListEventsAdapter(private val activity: EventOverviewActivity) :
                 onClick {
                     doAsync {
                         eventDao.delete(item.uid)
+
+                        val total = eventDao.countTotal(item.uid)
+                        val totalCompleted = eventDao.countCompleted(item.uid)
+                        diaryDao.updateCompletion(item.uid, total == totalCompleted)
                     }
                 }
             }
 
             image.apply {
-                if (item.imagePath == null) {
-                    setImageResource(R.drawable.ic_add_box_red_800_36dp)
+                val img = if (item.imagePath == null) {
+                    Picasso.get().load(R.drawable.ic_add_box_red_800_36dp)
                 } else {
-                    setImageURI(Uri.parse(item.imagePath))
+                    Picasso.get().load(Uri.parse(item.imagePath))
                 }
+
+                img.into(this)
 
                 onClick {
                     val intent = Intent()

@@ -3,10 +3,10 @@ package com.myapp.traveldiary
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.icu.text.SimpleDateFormat
+import android.icu.util.Calendar
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.TextView
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -58,13 +58,16 @@ class EventOverviewActivity : AppCompatActivity() {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             val eventUid = eventUidQueue.remove()
             val uri = data?.data
-            Log.e("IMAGE_PATH", uri.toString())
-            Log.e("IMAGE_PATH", "UID: $eventUid")
 
-            val eventDao = AppDatabase.getInstance(applicationContext).eventDao()
+            val diaryDao = AppDatabase.getInstance(application).diaryDao()
+            val eventDao = AppDatabase.getInstance(application).eventDao()
 
             doAsync {
                 eventDao.updateImagePath(eventUid, uri.toString())
+
+                val total = eventDao.countTotal(diaryId)
+                val totalCompleted = eventDao.countCompleted(diaryId)
+                diaryDao.updateCompletion(diaryId, total == totalCompleted)
             }
         }
     }
@@ -93,18 +96,16 @@ class EventOverviewActivity : AppCompatActivity() {
 
         val nameInput: TextInputEditText = view.findViewById(R.id.diary_name_input)
         val locationInput: TextInputEditText = view.findViewById(R.id.location_input)
-        val dateInput: TextView = view.findViewById(R.id.date_text)
 
-        val dateButton: Button = view.findViewById(R.id.date_btn)
+        val dateInput: EditText = view.findViewById(R.id.date)
 
-        dateButton.onClick {
-            datePicker(dateInput)
-        }
+        datePicker(dateInput)
+
 
         builder.apply {
             setPositiveButton(
                 "OK"
-            ) { dialog, id ->
+            ) { _, _ ->
                 val name = nameInput.text.toString()
                 val location = locationInput.text.toString()
                 val startDate = DateHelper.parseToLong(dateInput.text.toString())
@@ -114,12 +115,15 @@ class EventOverviewActivity : AppCompatActivity() {
 
                 doAsync {
                     eventDb.insert(newEvent)
+
+                    val diaryDao = AppDatabase.getInstance(applicationContext).diaryDao()
+                    diaryDao.updateCompletion(diaryId, false)
                 }
             }
 
             setNegativeButton(
                 "Cancel"
-            ) { dialog, id ->
+            ) { _, _ ->
 
             }
         }
@@ -127,21 +131,30 @@ class EventOverviewActivity : AppCompatActivity() {
         builder.create().show()
     }
 
-    private fun datePicker(textView: TextView) {
-        val c = java.util.Calendar.getInstance()
-        val year = c.get(java.util.Calendar.YEAR)
-        val month = c.get(java.util.Calendar.MONTH)
-        val day = c.get(java.util.Calendar.DAY_OF_MONTH)
+    private fun datePicker(editText: EditText) {
 
-        val dpd = DatePickerDialog(
-            this,
+        val c = Calendar.getInstance()
+
+        val dayFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+        editText.setText(dayFormatter.format(c.time))
+
+        val dateSetListener =
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                textView.text = "$dayOfMonth/" + (monthOfYear + 1) + "/$year"
-            },
-            year,
-            month,
-            day
-        )
-        dpd.show()
+                c.set(Calendar.YEAR, year)
+                c.set(Calendar.MONTH, monthOfYear)
+                c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                editText.setText(dayFormatter.format(c.time))
+            }
+
+        editText.onClick {
+            DatePickerDialog(
+                this@EventOverviewActivity,
+                dateSetListener,
+                c.get(Calendar.YEAR),
+                c.get(Calendar.MONTH),
+                c.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
     }
 }

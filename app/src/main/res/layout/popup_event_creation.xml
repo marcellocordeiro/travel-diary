@@ -56,23 +56,17 @@
             android:hint="Ex: Recife, Pernambuco" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/date_btn"
+    <EditText
+        android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="date"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="11/11/2019"
+        android:inputType="date"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/location_input_layout" />
-
-    <TextView
-        android:id="@+id/date_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="dd/MM/yyyy"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/date_btn"
-        app:layout_constraintStart_toStartOf="@+id/date_btn"
-        app:layout_constraintTop_toBottomOf="@id/date_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

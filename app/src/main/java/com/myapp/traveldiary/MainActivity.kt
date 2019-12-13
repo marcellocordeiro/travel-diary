@@ -1,15 +1,11 @@
 package com.myapp.traveldiary
 
 import android.Manifest
-import android.app.Activity
 import android.app.DatePickerDialog
-import android.content.Intent
+import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.TextView
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -25,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.sdk27.coroutines.onClick
 import pub.devrel.easypermissions.EasyPermissions
-
+import java.util.*
 
 // Diary overview
 
@@ -87,24 +83,22 @@ class MainActivity : AppCompatActivity() {
 
         val nameInput: TextInputEditText = view.findViewById(R.id.diary_name_input)
         val locationInput: TextInputEditText = view.findViewById(R.id.location_input)
-        val startDateInput: TextView = view.findViewById(R.id.start_date_text)
-        val endDateInput: TextView = view.findViewById(R.id.end_date_text)
+        //val startDateInput: TextView = view.findViewById(R.id.start_date_text)
+        //val endDateInput: TextView = view.findViewById(R.id.end_date_text)
 
-        val startDateButton: Button = view.findViewById(R.id.start_date_btn)
-        val endDateButton: Button = view.findViewById(R.id.end_date_btn)
+        val startDateInput: EditText = view.findViewById(R.id.start_date)
+        val endDateInput: EditText = view.findViewById(R.id.end_date)
 
-        startDateButton.onClick {
-            datePicker(startDateInput)
-        }
+        //val startDateButton: Button = view.findViewById(R.id.start_date_btn)
+        //val endDateButton: Button = view.findViewById(R.id.end_date_btn)
 
-        endDateButton.onClick {
-            datePicker(endDateInput)
-        }
+        datePicker(startDateInput)
+        datePicker(endDateInput)
 
         builder.apply {
             setPositiveButton(
                 "OK"
-            ) { dialog, id ->
+            ) { _, _ ->
                 val name = nameInput.text.toString()
                 val location = locationInput.text.toString()
                 val startDate = DateHelper.parseToLong(startDateInput.text.toString())
@@ -119,7 +113,7 @@ class MainActivity : AppCompatActivity() {
 
             setNegativeButton(
                 "Cancel"
-            ) { dialog, id ->
+            ) { _, _ ->
 
             }
 
@@ -128,23 +122,30 @@ class MainActivity : AppCompatActivity() {
         builder.create().show()
     }
 
-    private fun datePicker(textView: TextView) {
+    private fun datePicker(editText: EditText) {
+
         val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
 
-        val dpd = DatePickerDialog(
-            this,
+        val dayFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+        editText.setText(dayFormatter.format(c.time))
+
+        val dateSetListener =
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                c.set(Calendar.YEAR, year)
+                c.set(Calendar.MONTH, monthOfYear)
+                c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                // Display Selected date in TextView
-                textView.text = "$dayOfMonth/" + (monthOfYear + 1) + "/$year"
-            },
-            year,
-            month,
-            day
-        )
-        dpd.show()
+                editText.setText(dayFormatter.format(c.time))
+            }
+
+        editText.onClick {
+            DatePickerDialog(
+                this@MainActivity,
+                dateSetListener,
+                c.get(Calendar.YEAR),
+                c.get(Calendar.MONTH),
+                c.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
     }
 }

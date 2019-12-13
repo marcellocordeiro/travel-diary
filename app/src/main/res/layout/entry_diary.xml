@@ -18,53 +18,75 @@
         tools:layout_editor_absoluteX="4dp"
         tools:layout_editor_absoluteY="4dp">
 
+        <ImageView
+            android:id="@+id/completion_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/diary_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/diary_name"
+            app:srcCompat="@drawable/ic_cancel_red_800_24dp" />
+
+        <ImageView
+            android:id="@+id/delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:adjustViewBounds="true"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/diary_name"
+            app:srcCompat="@drawable/ic_close_black_24dp" />
+
         <TextView
             android:id="@+id/diary_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/completion_hint"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/diary_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/start_date"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/diary_name"
+            tools:text="@tools:sample/cities" />
 
-    <TextView
-        android:id="@+id/diary_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/start_date"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/diary_name"
-        app:layout_constraintVertical_bias="0.0"
-        tools:text="@tools:sample/cities" />
+        <TextView
+            android:id="@+id/diary_start_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/diary_location"
+            app:layout_constraintStart_toEndOf="@+id/diary_location"
+            app:layout_constraintTop_toTopOf="@+id/diary_location"
+            tools:text="@tools:sample/date/ddmmyy" />
 
-    <TextView
-        android:id="@+id/diary_start_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/diary_location"
-        app:layout_constraintStart_toEndOf="@+id/diary_location"
-        app:layout_constraintTop_toTopOf="@+id/diary_location"
-        tools:text="@tools:sample/date/ddmmyy" />
-
-    <TextView
-        android:id="@+id/diary_end_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/diary_start_date"
-        app:layout_constraintStart_toEndOf="@+id/diary_start_date"
-        app:layout_constraintTop_toTopOf="@+id/diary_start_date"
-        tools:text="@tools:sample/date/ddmmyy" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/diary_end_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/diary_start_date"
+            app:layout_constraintStart_toEndOf="@+id/diary_start_date"
+            app:layout_constraintTop_toTopOf="@+id/diary_start_date"
+            tools:text="@tools:sample/date/ddmmyy" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

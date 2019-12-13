@@ -3,6 +3,7 @@ package com.myapp.traveldiary.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -10,7 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.myapp.traveldiary.DateHelper
 import com.myapp.traveldiary.EventOverviewActivity
 import com.myapp.traveldiary.R
+import com.myapp.traveldiary.dal.AppDatabase
 import com.myapp.traveldiary.dal.dao.Diary
+import com.squareup.picasso.Picasso
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.startActivity
 
@@ -22,9 +26,30 @@ class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder
         private val location: TextView = view.findViewById(R.id.diary_location)
         private val startDate: TextView = view.findViewById(R.id.diary_start_date)
         private val endDate: TextView = view.findViewById(R.id.diary_end_date)
-        //private val deleteButton: ImageView = view.findViewById(R.id.delete_button)
+        private val deleteButton: ImageView = view.findViewById(R.id.delete_button)
+        private val completionHint: ImageView = view.findViewById(R.id.completion_hint)
+
+        private val diaryDao = AppDatabase.getInstance(view.context).diaryDao()
+        private val eventDao = AppDatabase.getInstance(view.context).eventDao()
 
         fun bindTo(item: Diary) {
+            deleteButton.apply {
+                onClick {
+                    doAsync {
+                        eventDao.deleteAll(item.uid)
+                        diaryDao.delete(item.uid)
+                    }
+                }
+            }
+
+            val img = if (item.completed) {
+                Picasso.get().load(R.drawable.ic_check_circle_green_a400_24dp)
+            } else {
+                Picasso.get().load(R.drawable.ic_cancel_red_800_24dp)
+            }
+
+            img.into(completionHint)
+
             name.apply {
                 text = item.name
 
@@ -69,7 +94,7 @@ class ListDiariesAdapter : ListAdapter<Diary, ListDiariesAdapter.DiaryViewHolder
                 oldItem.uid == newItem.uid
 
             override fun areContentsTheSame(oldItem: Diary, newItem: Diary) =
-                oldItem.toString() == oldItem.toString()
+                oldItem.completed == newItem.completed
         }
     }
 }
