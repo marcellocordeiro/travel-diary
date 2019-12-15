@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -72,13 +71,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("InflateParams")
     private fun showPopup() {
-        val diaryDb = AppDatabase.getInstance(applicationContext).diaryDao()
-
         val content = LayoutInflater.from(this).inflate(R.layout.popup_diary_creation, null)
-
-        val builder = AlertDialog.Builder(this).apply {
-            setView(content)
-        }
 
         val nameInput: TextInputEditText = content.findViewById(R.id.diary_name_input)
         val locationInput: TextInputEditText = content.findViewById(R.id.location_input)
@@ -88,30 +81,21 @@ class MainActivity : AppCompatActivity() {
         DateHelper.datePicker(this, startDateInput)
         DateHelper.datePicker(this, endDateInput)
 
-        builder.apply {
-            setPositiveButton(
-                "OK"
-            ) { _, _ ->
-                val name = nameInput.text.toString()
-                val location = locationInput.text.toString()
-                val startDate = DateHelper.parseToLong(startDateInput.text.toString())
-                val endDate = DateHelper.parseToLong(endDateInput.text.toString())
+        val positiveCallback = {
+            val name = nameInput.text.toString()
+            val location = locationInput.text.toString()
+            val startDate = DateHelper.parseToLong(startDateInput.text.toString())
+            val endDate = DateHelper.parseToLong(endDateInput.text.toString())
 
-                val newDiary = Diary(name, location, startDate, endDate)
+            val newDiary = Diary(name, location, startDate, endDate)
 
-                doAsync {
-                    diaryDb.insert(newDiary)
-                }
+            doAsync {
+                val diaryDb = AppDatabase.getInstance(applicationContext).diaryDao()
+                diaryDb.insert(newDiary)
             }
-
-            setNegativeButton(
-                "Cancel"
-            ) { _, _ ->
-
-            }
-
         }
 
-        builder.create().show()
+        val popup = PopupFragment(content, positiveCallback, {})
+        popup.show(supportFragmentManager, "Diary")
     }
 }

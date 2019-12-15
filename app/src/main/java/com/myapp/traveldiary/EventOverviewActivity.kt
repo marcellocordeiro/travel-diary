@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -86,13 +85,7 @@ class EventOverviewActivity : AppCompatActivity() {
 
     @SuppressLint("InflateParams")
     private fun showPopup() {
-        val eventDb = AppDatabase.getInstance(applicationContext).eventDao()
-
         val content = LayoutInflater.from(this).inflate(R.layout.popup_event_creation, null)
-
-        val builder = AlertDialog.Builder(this).apply {
-            setView(content)
-        }
 
         val nameInput: TextInputEditText = content.findViewById(R.id.diary_name_input)
         val locationInput: TextInputEditText = content.findViewById(R.id.location_input)
@@ -100,32 +93,24 @@ class EventOverviewActivity : AppCompatActivity() {
 
         DateHelper.datePicker(this, dateInput)
 
-        builder.apply {
-            setPositiveButton(
-                "OK"
-            ) { _, _ ->
-                val name = nameInput.text.toString()
-                val location = locationInput.text.toString()
-                val startDate = DateHelper.parseToLong(dateInput.text.toString())
-                val imagePath: String? = null
+        val positiveCallback = {
+            val name = nameInput.text.toString()
+            val location = locationInput.text.toString()
+            val startDate = DateHelper.parseToLong(dateInput.text.toString())
+            val imagePath: String? = null
 
-                val newEvent = Event(diaryId, name, location, startDate, imagePath)
+            val newEvent = Event(diaryId, name, location, startDate, imagePath)
 
-                doAsync {
-                    eventDb.insert(newEvent)
+            doAsync {
+                val eventDb = AppDatabase.getInstance(applicationContext).eventDao()
+                val diaryDao = AppDatabase.getInstance(applicationContext).diaryDao()
 
-                    val diaryDao = AppDatabase.getInstance(applicationContext).diaryDao()
-                    diaryDao.updateCompletion(diaryId, false)
-                }
-            }
-
-            setNegativeButton(
-                "Cancel"
-            ) { _, _ ->
-
+                eventDb.insert(newEvent)
+                diaryDao.updateCompletion(diaryId, false)
             }
         }
 
-        builder.create().show()
+        val popup = PopupFragment(content, positiveCallback, {})
+        popup.show(supportFragmentManager, "Event")
     }
 }
