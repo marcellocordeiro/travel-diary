@@ -12,4 +12,4 @@ Além de que é possível ver a ação do garbage collector pelos simboloso de l
 As análises do Leak Canary não encontraram nenhum leak de memória no nosso aplicativo.
 
 ![Leak Canary Log](images/leak_memory.png)
-![Leak Canary Result](images/distinct_leaks.png)
+![Leak Canary Result](images/distinct_leaks.jpg)
