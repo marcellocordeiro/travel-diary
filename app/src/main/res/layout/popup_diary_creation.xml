@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/diaryName"
@@ -28,14 +29,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:hint="Ex: Recife Travel" />
+            android:hint="@string/diary_name_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Location"
+        android:text="@string/location"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,14 +55,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:hint="Ex: Recife, Pernambuco" />
+            android:hint="@string/location_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/start_date_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start:"
+        android:text="@string/date_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/start_date"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,18 +74,18 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="false"
-        android:hint="11/11/2019"
         android:inputType="date"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/end_date_hint"
         app:layout_constraintStart_toEndOf="@+id/start_date_hint"
-        app:layout_constraintTop_toBottomOf="@+id/location_input_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/location_input_layout"
+        tools:text="@tools:sample/date/ddmmyy" />
 
     <TextView
         android:id="@+id/end_date_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="End:"
+        android:text="@string/date_end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/end_date"
         app:layout_constraintHorizontal_bias="0.0"
@@ -97,11 +98,11 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="false"
-        android:hint="11/11/2019"
         android:inputType="date"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/end_date_hint"
-        app:layout_constraintTop_toBottomOf="@+id/location_input_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/location_input_layout"
+        tools:text="@tools:sample/date/ddmmyy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

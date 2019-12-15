@@ -1,10 +1,9 @@
 package com.myapp.traveldiary
 
 import android.Manifest
-import android.app.DatePickerDialog
-import android.icu.text.SimpleDateFormat
-import android.icu.util.Calendar
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +20,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.sdk27.coroutines.onClick
 import pub.devrel.easypermissions.EasyPermissions
-import java.util.*
 
 // Diary overview
 
@@ -72,28 +70,23 @@ class MainActivity : AppCompatActivity() {
             Observer { (recyclerView.adapter as ListDiariesAdapter).submitList(it) })
     }
 
+    @SuppressLint("InflateParams")
     private fun showPopup() {
         val diaryDb = AppDatabase.getInstance(applicationContext).diaryDao()
 
-        val view = layoutInflater.inflate(R.layout.popup_diary_creation, null)
+        val content = LayoutInflater.from(this).inflate(R.layout.popup_diary_creation, null)
 
         val builder = AlertDialog.Builder(this).apply {
-            setView(view)
+            setView(content)
         }
 
-        val nameInput: TextInputEditText = view.findViewById(R.id.diary_name_input)
-        val locationInput: TextInputEditText = view.findViewById(R.id.location_input)
-        //val startDateInput: TextView = view.findViewById(R.id.start_date_text)
-        //val endDateInput: TextView = view.findViewById(R.id.end_date_text)
+        val nameInput: TextInputEditText = content.findViewById(R.id.diary_name_input)
+        val locationInput: TextInputEditText = content.findViewById(R.id.location_input)
+        val startDateInput: EditText = content.findViewById(R.id.start_date)
+        val endDateInput: EditText = content.findViewById(R.id.end_date)
 
-        val startDateInput: EditText = view.findViewById(R.id.start_date)
-        val endDateInput: EditText = view.findViewById(R.id.end_date)
-
-        //val startDateButton: Button = view.findViewById(R.id.start_date_btn)
-        //val endDateButton: Button = view.findViewById(R.id.end_date_btn)
-
-        datePicker(startDateInput)
-        datePicker(endDateInput)
+        DateHelper.datePicker(this, startDateInput)
+        DateHelper.datePicker(this, endDateInput)
 
         builder.apply {
             setPositiveButton(
@@ -120,32 +113,5 @@ class MainActivity : AppCompatActivity() {
         }
 
         builder.create().show()
-    }
-
-    private fun datePicker(editText: EditText) {
-
-        val c = Calendar.getInstance()
-
-        val dayFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
-        editText.setText(dayFormatter.format(c.time))
-
-        val dateSetListener =
-            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                c.set(Calendar.YEAR, year)
-                c.set(Calendar.MONTH, monthOfYear)
-                c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-
-                editText.setText(dayFormatter.format(c.time))
-            }
-
-        editText.onClick {
-            DatePickerDialog(
-                this@MainActivity,
-                dateSetListener,
-                c.get(Calendar.YEAR),
-                c.get(Calendar.MONTH),
-                c.get(Calendar.DAY_OF_MONTH)
-            ).show()
-        }
     }
 }
