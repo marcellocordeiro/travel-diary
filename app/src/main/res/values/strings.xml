@@ -18,6 +18,6 @@
     <string name="date_start">Start:</string>
     <string name="location_hint">Ex: Aperture Labs</string>
     <string name="location">Location</string>
-    <string name="diary_name_hint">Ex: My Black Mesa trip</string>
+    <string name="diary_name_hint">Ex: My trip</string>
     <string name="event_name_hint">Ex: Cake tasting</string>
 </resources>

@@ -57,10 +57,10 @@ class EventOverviewActivity : AppCompatActivity() {
             val eventUid = eventUidQueue.remove()
             val uri = data?.data
 
-            val diaryDao = AppDatabase.getInstance(application).diaryDao()
-            val eventDao = AppDatabase.getInstance(application).eventDao()
-
             doAsync {
+                val diaryDao = AppDatabase.getInstance(application).diaryDao()
+                val eventDao = AppDatabase.getInstance(application).eventDao()
+
                 eventDao.updateImagePath(eventUid, uri.toString())
 
                 val total = eventDao.countTotal(diaryId)
@@ -71,10 +71,9 @@ class EventOverviewActivity : AppCompatActivity() {
     }
 
     private fun showEventList() {
-        val activity = this
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = ListEventsAdapter(activity)
+            adapter = ListEventsAdapter(this@EventOverviewActivity)
         }
 
         val model = ViewModelProviders.of(this).get(EventViewModel::class.java)
