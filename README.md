@@ -22,9 +22,9 @@ You can follow the progress and task division in the issue tracker.
 
 ## Screenshots
 
-![alt text](docs/screenshots/diary_overview.jpg "Diary overview")
-![alt text](docs/screenshots/add_diary.jpg "Adding a new diary")
-![alt text](docs/screenshots/event_overview.jpg "Event overview")
-![alt text](docs/screenshots/on_completion.jpg "On completion")
+<img src="docs/screenshots/diary_overview.jpg" width=300 >
+<img src="docs/screenshots/add_diary.jpg" width=300 >
+<img src="docs/screenshots/event_overview.jpg" width=300 >
+<img src="docs/screenshots/on_completion.jpg" width=300 >
 
 [Click here for an interactive demo](https://balsamiq.cloud/sx17gu0/ptf5npm/r2278?f=N4IgUiBcCMA0IDkpxAYWfAMhkAhHAsjgFo4DSUA2gLoC%2BQA%3D)
